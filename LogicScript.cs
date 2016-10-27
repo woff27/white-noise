@@ -151,94 +151,82 @@ public class LogicScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		IISRunning();
-	Debug.Log(playScene);
-	Debug.Log(sceneComplete);
+		if(IIS == true)
+		{
+			IISRunning();
+		}
+		Debug.Log(playScene);
+		Debug.Log(sceneComplete);
 		if(sceneComplete==true)
 		{
-			
-//			if(playScene == 1)
-//			{ 
-//				StartIntro();
-//			}
+			playScene++;
+			sceneComplete = false;
 			if(playScene == 1) 
 			{
 				StartCoroutine(Scene1aStart());
-				sceneComplete = false;
 			}
 			if(playScene == 2)
 			{
 				StartCoroutine(Scene1bStart());
-				sceneComplete = false;
 			}
 			if(playScene == 3) 
 			{
 				Scene2Start();
-				sceneComplete = false;
 			}
 			if(playScene == 4) 
 			{
 				StartCoroutine(Scene2_01());
-				sceneComplete = false;
 			}
 			if(playScene == 5)
 			{
 				StartCoroutine(Scene2_02());
-				sceneComplete = false;
 			}
 			if(playScene == 6)
 			{
 				StartCoroutine(Scene2_03());
-				sceneComplete = false;
 			}
 			if(playScene == 7)
 			{
 				StartCoroutine(Scene2_04());
-				sceneComplete = false;
 			}
 			if(playScene == 8)
 			{
 				StartCoroutine(Scene2_05());
-				sceneComplete = false;
 			}
 			if(playScene == 9)
 			{
 				StartCoroutine(Scene2_06());
-				sceneComplete = false;
 			}
 			if(playScene == 10)
 			{
 				StartCoroutine(Scene3Start());
-				sceneComplete = false;
 			}
-			playScene++;
+
 		}
 
 	}
 
+	//White Noise title scene, waiting for mouse imput
 	public void IISRunning()
 	{
-		if (IIS == true)
+		if(Input.GetMouseButtonDown(0))
 		{
-			if(Input.GetMouseButtonDown(0))
-			{
-				IIS = false;
-				StartIntro();
-			}
-
+			IIS = false;
+			StartIntro();
 		}
 	}
 
-	public void StartIntro() //0
+
+	public void StartIntro()
 	{
 		textMenu.SetActive(false);
 		scene1text.enabled = true;
 		mainCamera.GetComponent<NoiseAndGrain>().intensityMultiplier = 0.5f;
 		scene1textAnim.Play("Main Text");
 		sceneComplete = true;
-
 	}
 
+	//playScene == 1
 	IEnumerator Scene1aStart()
 	{
 		//scene1text.text = "You awaken to a loud banging on your door\n \"agh, what time is it?\"\n the clock reads 11:00pm\n the banging continues as you shuffle out of bed";
@@ -251,12 +239,12 @@ public class LogicScript : MonoBehaviour {
 		sceneComplete = true;
 	}
 
+	//playScene == 2
 	IEnumerator Scene1bStart()
 	{
 		//shakyTextAnim.Play("Main Text");
 		while (true)
 		{
-		Debug.Log("Test");
 			if(Input.GetMouseButtonDown(0))
 			{
 				sceneComplete = true;
@@ -266,12 +254,12 @@ public class LogicScript : MonoBehaviour {
 		}
 	}
 
-	public void Scene2Start() //1
+	//playScene == 3
+	public void Scene2Start() //
 	{
 		bangTextAnim.SetBool("Fadeout",true);
 		shakyTextAnim.SetBool("Fadeout",true);
-		bangText.enabled = false;
-		shakyText.enabled = false;
+		bangTextObject.SetActive(false);
 		shakyTextObject.SetActive(false);
 		scene1textObject.SetActive(false);
 
@@ -280,9 +268,9 @@ public class LogicScript : MonoBehaviour {
 		scene2Text.enabled = true;
 		scene2textAnim.Play("Main Text");
 		sceneComplete = true;
-
 	}
 
+	//playScene == 4
 	IEnumerator Scene2_01()
 	{
 		yield return new WaitForSeconds(2);
@@ -291,6 +279,7 @@ public class LogicScript : MonoBehaviour {
 		scene2_01textAnim.Play("Main Text");
 		sceneComplete = true;
 	}
+
 	IEnumerator Scene2_02()
 	{
 		yield return new WaitForSeconds(2);
@@ -318,6 +307,9 @@ public class LogicScript : MonoBehaviour {
 		scene2_04textAnim.Play("Main Text");
 		sceneComplete = true;
 	}
+
+	//You sigh as you open the door
+	//playScene ==
 	IEnumerator Scene2_05()
 	{
 		yield return new WaitForSeconds(2);
@@ -329,24 +321,31 @@ public class LogicScript : MonoBehaviour {
 	}
 	IEnumerator Scene2_06()
 	{
-		yield return new WaitForSeconds(3);
-		if(Input.GetMouseButtonDown(0))
+		yield return new WaitForSeconds(2);
+		while (true)
 		{
-			scene2_05textObject.SetActive(false);
-			scene2_06Text.enabled = true;
-			//scene2Text.text = "You're in her apartment now, as she leaves, she hands you an old looking baby monitor, it feels heavy in your hand and sounds like TV static playing from it. She mutters something about white noise keeps it quiet and disappears";
-			scene2Text.text = "Her desperation is palpable. You don’t owe her anything, you two could hardly be considered acquaintances. Yet her pleading eyes are locked on to your face, and she’s already handing you an ancient looking baby monitor that is emitting a noise like TV static.\"Yeah…yes, of course. Let me get my shoes,\" you reluctantly reply.";
-			scene2textAnim.Play("Main Text");
-			yield return new WaitForSeconds(2);
-			babyMonitor.SetActive(true);
-			snapshot.TransitionTo(2);scene3 = true;
-			sceneComplete = true;
+			if(Input.GetMouseButtonDown(0))
+			{
+				scene2_05textObject.SetActive(false);
+				scene2_06Text.enabled = true;
+				//scene2Text.text = "You're in her apartment now, as she leaves, she hands you an old looking baby monitor, it feels heavy in your hand and sounds like TV static playing from it. She mutters something about white noise keeps it quiet and disappears";
+				scene2Text.text = "Her desperation is palpable. You don’t owe her anything, you two could hardly be considered acquaintances. Yet her pleading eyes are locked on to your face, and she’s already handing you an ancient looking baby monitor that is emitting a noise like TV static.\"Yeah…yes, of course. Let me get my shoes,\" you reluctantly reply.";
+				scene2textAnim.Play("Main Text");
+				yield return new WaitForSeconds(2);
+				babyMonitor.SetActive(true);
+				snapshot.TransitionTo(2);scene3 = true;
+				sceneComplete = true;
+				yield break;
+			}
+			yield return null;
 		}
 	}
 
 	IEnumerator Scene3Start()
 	{
 		//scene2Text.text = "The living room is filled with pictures and various knickknacks, you sit on the couch and settle in, baby monitor by your side. The noise makes you sleepy, guess it works";
+		scene2_06Text.enabled = false;
+		scene2textObject.SetActive(true);
 		scene2Text.text = "She leads you down the hall to her apartment door, the hefty baby monitor dragging your arm toward the floor. \"It’s a white noise machine,\" she explains, \"that noise you hear, it helps him sleep, it should play all night, I'll be back before the morning.\" With that, she turns and rushes out the door leaving you alone in the cluttered living room. You step over toys as you pick your way toward the couch. The walls are lined with clutter- knick knacks on shelves, family photos in thick frames, their occupants staring down at you as you sit in the quiet room. The only sound you hear is the roar of the white noise. It only takes a few moments before your eyelids are drooping, you decide to lay on the couch.";
 		scene2textAnim.Play("Main Text");
 		yield return new WaitForSeconds(2);
