@@ -28,6 +28,15 @@ public class LogicScript : MonoBehaviour {
 
 	private int click = 0;
 
+	private AudioSource doorKnock;
+	public AudioClip knock;
+
+	private GameObject clickObject;
+	private Text clickText;
+
+	private GameObject blackOverlay;
+	private Image blackoverlayImage;
+	private Animator blackoverlayAnim;
 
 	private GameObject textMenu;
 	private GameObject mainCamera;
@@ -47,6 +56,10 @@ public class LogicScript : MonoBehaviour {
 	private Text shakyText;
 
 	private Animator textMenuAnim;
+
+	private GameObject scene5bObject;
+	private Text scene5bText;
+	private Animator scene5bAnim;
 
 	private GameObject scene2textObject;
 	private Text scene2Text;
@@ -77,18 +90,33 @@ public class LogicScript : MonoBehaviour {
 	private Text scene2_06Text;
 	private Animator scene2_06textAnim;
 
+	private GameObject finalscenetextObject;
+	private Text finalsceneText;
+	private Animator finalscenetextAnim; 
+	private RectTransform finaltextRect;
+	private float rectX;
+	private float rectY;
+
+
 	public AudioMixer mixer;
 	private AudioMixerSnapshot snapshot;
+
+
+
 
 
 
 	// Use this for initialization
 	void Start () 
 	{
+		scene5bObject = GameObject.Find("Scene5bText");
+		scene5bObject.SetActive(false);
 		IIS = true;
 		sceneComplete = false;
 
 		playScene = 0;
+
+
 
 		textMenu = GameObject.FindGameObjectWithTag("MainMenuText");
 		textMenuAnim = textMenu.GetComponent<Animator>();
@@ -131,15 +159,23 @@ public class LogicScript : MonoBehaviour {
 		bangText = bangTextObject.GetComponent<Text>();
 		bangTextAnim = bangTextObject.GetComponent<Animator>();
 
-
-
-
 		shakyTextObject = GameObject.Find("ShakyText");
 		shakyText = shakyTextObject.GetComponent<Text>();
 		shakyTextAnim = shakyTextObject.GetComponent<Animator>();
 
-	
+		clickObject = GameObject.Find("ClickText");
+		clickText = clickObject.GetComponent<Text>();
 
+		blackOverlay = GameObject.Find("blackoverlay");
+		blackoverlayImage= blackOverlay.GetComponent<Image>();
+		blackoverlayAnim = blackOverlay.GetComponent<Animator>();
+
+
+
+//		finalscenetextObject = GameObject.Find("FinalScene");
+//		finalsceneText = finalscenetextObject.GetComponent<Text>();
+//		finalscenetextAnim = finalscenetextObject.GetComponent<Animator>();
+//		finaltextRect = finalscenetextObject.GetComponent<RectTransform>();
 
 		textMenuAnim.Play("MainLongFade");
 
@@ -151,6 +187,9 @@ public class LogicScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
+
+	//**Uncomment this and get rid of the coroutine reference
+		//StartCoroutine(FinalScene());
 		if(IIS == true)
 		{
 			IISRunning();
@@ -201,7 +240,26 @@ public class LogicScript : MonoBehaviour {
 			{
 				StartCoroutine(Scene3Start());
 			}
-
+			if(playScene == 11)
+			{
+				StartCoroutine(Scene3aStart());
+			}
+			if(playScene == 12)
+			{
+				StartCoroutine(Scene3bStart());
+			}
+			if(playScene == 13)
+			{
+				StartCoroutine(Scene4Start());
+			}
+			if(playScene == 14)
+			{
+				StartCoroutine(Scene5Start());
+			}
+			if(playScene == 15)
+			{
+				StartCoroutine(Scene5bStart());
+			}
 		}
 
 	}
@@ -233,21 +291,27 @@ public class LogicScript : MonoBehaviour {
 		scene1text.text = "You wake suddenly, unsure of whether the\n noise you heard was real or in a dream.\n The glow from the clock face blinds you momentarily.\n Your vision sharpens, it's just past midnight. Then you hear it again.";
       	yield return new WaitForSeconds(1);
 		shakyText.enabled = true;
+		doorKnock = shakyTextObject.GetComponent<AudioSource>();
+		doorKnock.PlayOneShot(knock);
 		yield return new WaitForSeconds(1);
 		bangText.enabled = true;
 		bangTextAnim.Play("Main Text");
 		sceneComplete = true;
+		yield return new WaitForSeconds(1);
 	}
 
 	//playScene == 2
 	IEnumerator Scene1bStart()
 	{
+		yield return new WaitForSeconds(3);
+		clickText.enabled = true;
 		//shakyTextAnim.Play("Main Text");
 		while (true)
 		{
 			if(Input.GetMouseButtonDown(0))
 			{
 				sceneComplete = true;
+				clickText.enabled = false;
 				yield break;
 			}
 			yield return null;
@@ -318,14 +382,16 @@ public class LogicScript : MonoBehaviour {
 		scene2_05Text.enabled = true;
 		scene2_05textAnim.Play("Main Text");
 		sceneComplete = true;
+		yield return new WaitForSeconds(2);
 	}
 	IEnumerator Scene2_06()
 	{
-		yield return new WaitForSeconds(2);
 		while (true)
 		{
+		clickText.enabled = true;
 			if(Input.GetMouseButtonDown(0))
 			{
+				clickText.enabled = false;
 				scene2_05textObject.SetActive(false);
 				scene2_06Text.enabled = true;
 				//scene2Text.text = "You're in her apartment now, as she leaves, she hands you an old looking baby monitor, it feels heavy in your hand and sounds like TV static playing from it. She mutters something about white noise keeps it quiet and disappears";
@@ -344,12 +410,73 @@ public class LogicScript : MonoBehaviour {
 	IEnumerator Scene3Start()
 	{
 		//scene2Text.text = "The living room is filled with pictures and various knickknacks, you sit on the couch and settle in, baby monitor by your side. The noise makes you sleepy, guess it works";
+
 		scene2_06Text.enabled = false;
 		scene2textObject.SetActive(true);
-		scene2Text.text = "She leads you down the hall to her apartment door, the hefty baby monitor dragging your arm toward the floor. \"It’s a white noise machine,\" she explains, \"that noise you hear, it helps him sleep, it should play all night, I'll be back before the morning.\" With that, she turns and rushes out the door leaving you alone in the cluttered living room. You step over toys as you pick your way toward the couch. The walls are lined with clutter- knick knacks on shelves, family photos in thick frames, their occupants staring down at you as you sit in the quiet room. The only sound you hear is the roar of the white noise. It only takes a few moments before your eyelids are drooping, you decide to lay on the couch.";
+		scene2Text.text = "She leads you down the hall to her apartment door, the hefty baby monitor dragging your arm toward the floor. \"It’s a white noise machine,\" she explains, \"that noise you hear, it helps him sleep, it should play all night, I'll be back before the morning.\"";
+		scene2textAnim.Play("Main Text");
+		sceneComplete = true;
+		yield return new WaitForSeconds(2);
+	}
+
+	IEnumerator Scene3aStart()
+	{
+		yield return new WaitForSeconds(2);
+		scene2Text.text = "With that, she turns and rushes out the door leaving you alone in the cluttered living room. You step over toys as you pick your way toward the couch."; 
+		scene2textAnim.Play("Main Text");
+		sceneComplete = true;
+	}
+
+	IEnumerator Scene3bStart()
+	{
+		yield return new WaitForSeconds(2);
+		scene2Text.text = "The walls are lined with clutter- knick knacks on shelves, family photos in thick frames, their occupants staring down at you as you sit in the quiet room. The only sound you hear is the roar of the white noise. It only takes a few moments before your eyelids are drooping, you decide to lie on the couch.";
+		scene2textAnim.Play("Main Text");
+		sceneComplete = true;
+	}
+
+	IEnumerator Scene4Start()
+	{
+		yield return new WaitForSeconds(2);
+		scene2Text.text = "You close your eyes and try to wait out the night, monitor close in case baby cries";
 		scene2textAnim.Play("Main Text");
 		yield return new WaitForSeconds(2);
+		scene2textObject.GetComponent<Shake>().enabled = true;
+		blackoverlayImage.enabled = true;
+		blackoverlayAnim.enabled = true;
+		yield return new WaitForSeconds(3);
+		sceneComplete = true;
+	}
+	IEnumerator Scene5Start()
+	{
+		yield return new WaitForSeconds(2);
+		blackoverlayImage.enabled = false;
+		scene2Text.text = "You hear something... were you sleeping? You don't see a clock nearby... \"it's probably just the baby moving around.\" you tell yourself";
+		sceneComplete = true;
+	}
+	IEnumerator Scene5bStart()
+	{
+		yield return new WaitForSeconds(2);
+		scene2Text.enabled = false;
+		scene5bObject.SetActive(true);
+		sceneComplete = true;
+	}
 
+
+	IEnumerator FinalScene()
+	{
+		
+		while (true)
+		{
+			finalscenetextAnim.Play("FinalSceneAnim");
+			yield return new WaitForSeconds(Random.value);
+			if(Input.GetMouseButtonDown(0))
+			{
+				sceneComplete = true;
+				yield break;
+			}
+			yield return null;
+		}
 	}
 
 
